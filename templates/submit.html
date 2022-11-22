@@ -1,0 +1,26 @@
+
+<div class="row">
+    <div class="col">
+        <h2>您好，手機號碼{{ans}}的貴客.
+            <p>您目前處方簽：{{mode}}{{reply}}</p>
+            有任何問題，請和藥局聯絡！</h2>
+    </div>
+</div>
+<style>
+    @media screen and (max-width: 991px) {
+        html{
+            font-size: 200%; /*手機版全網頁放大兩倍*/
+        }
+        input[type="text"]{
+            font-size: 100%; /*手機版輸入框字體放大*/
+            width: 100%; /*手機版輸入框長度切齊螢幕*/
+        }
+        input[type="text"]::placeholder {
+        font-size: 65%; /*手機版輸入框提示文字稍微放大*/
+        }
+        button.btn.btn-primary{
+            font-size: 100%; /*手機版上傳按鈕放大*/
+            float: right; /*手機版上傳按鈕靠右切齊螢幕*/
+        }
+    }
+</style>

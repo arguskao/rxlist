@@ -1,0 +1,41 @@
+<form method="POST" action="{{url_for('submit')}}">
+    <input type="number" inputmode="numeric" class="form-control"
+        name="tel"
+        placeholder="請輸入您的手機號碼">
+    <button type="submit" class="btn btn-primary">送出
+    </button>
+</form>
+<style>
+@media screen and (max-width: 991px) {
+    html{
+        font-size: 400%; /*手機版全網頁放大四倍*/
+    }
+    input[type="number"]{
+        font-size: 100%; /*手機版輸入框字體放大*/
+        width: 100%; /*手機版輸入框長度切齊螢幕*/
+    }
+    input[type="number"]::placeholder {
+    font-size: 65%; /*手機版輸入框提示文字稍微放大*/
+    }
+    button.btn.btn-primary{
+        font-size: 100%; /*手機版上傳按鈕放大*/
+        float: right; /*手機版上傳按鈕靠右切齊螢幕*/
+    }
+}
+
+@media screen and (min-width: 992px){
+html{
+        font-size: 400%; /*手機版全網頁放大四倍*/
+    }
+    input[type="number"]{
+        font-size: 100%; /*手機版輸入框字體放大*/
+        width: 50%; /*手機版輸入框長度切齊螢幕*/
+    }
+    input[type="number"]::placeholder {
+    font-size: 65%; /*手機版輸入框提示文字稍微放大*/
+    }
+    button.btn.btn-primary{
+        font-size: 95%; /*手機版上傳按鈕放大*/
+    }
+}
+</style>

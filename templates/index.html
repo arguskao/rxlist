@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-TW">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap CSS -->
+        <link rel="shortcut icon" href="{{ url_for('static',
+            filename='favicon.ico') }}">
+        <title>上傳處方簽</title>
+        <style>
+            @media screen and (max-width: 991px) {
+                /*html{
+                    font-size: 200%; 
+                */
+                /*手機版全網頁放大兩倍*/
+                input[type="number"]{
+                    font-size: 100%; /*手機版輸入框字體放大*/
+                    width: 99%; /*手機版輸入框長度切齊螢幕*/
+                }
+                input[type="number"]::placeholder {
+                font-size: auto; /*手機版輸入框提示文字稍微放大*/
+                }
+                input[type="submit"]{
+                    font-size: 100%; /*手機版上傳按鈕放大*/
+                    float: right; /*手機版上傳按鈕靠右切齊螢幕*/
+                }
+                input[type="file"]{
+                    font-size: 100%; /*手機版選擇檔案按鈕稍微放大*/
+                }
+                img {
+                    width: 100%; /*手機版說明圖片自動縮放*/
+                }
+            }
+            .custom-file-input ~ .custom-file-label::after {
+                content: "開啟相機";
+            }
+        </style>
+        <!-- <title>請稍等，上傳處方簽</title> -->
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+            integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+            crossorigin="anonymous">
+        <script
+            src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+            integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+            crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="contaier">
+            <div class="col">
+                {% with msg = get_flashed_messages() %}
+                {% if msg %} <!-- 如果msg變數值不是空的… -->
+                {% for m in msg %}
+                <p>{{ m }}</p> <!-- 顯示快閃訊息 -->
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                {% if filename %} <!-- 如果filename變數值不是空的，則顯示影像。 -->
+                <div>
+                    <img src="{{ url_for('display_image', filename=filename)}}">
+                </div>
+                {% endif %}
+                <br><br>
+
+                <form method="POST" enctype="multipart/form-data"
+                    action="{{
+                    url_for('upload_file') }}">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"
+                                id="inputGroupFileAddon01">上傳圖片</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" capture="environment"
+                                name="filename"
+                                accept=".png, .jpg, .jpeg, .gif"
+                                class="custom-file-input"
+                                id="inputGroupFile01"
+                                aria-describedby="inputGroupFileAddon01"
+                                required>
+                            <label class="custom-file-label"
+                                for="inputGroupFile01">挑相片</label>
+                        </div>
+                    </div>
+                    <div class="input-group mb-12">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">請輸入您的手機</span>
+                        </div>
+                        <input type="number" inputmode="numeric"
+                            class="form-control form-control-lg"
+                            name="phone"
+                            placeholder="範例: 0980347570" required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">上傳</button>
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+
+                <!-- br><br><br><br><br>
+                <form method="POST" enctype="multipart/form-data" action="{{
+                    url_for('upload_file') }}">
+                    <input type="file" capture="environment" name="filename"
+                        accept=".png, .jpg, .jpeg, .gif" required>
+                    <p></p>
+                    <small class="form-text">請輸入您的手機</small>
+                    <input type="text" name="phone"
+                        placeholder="(範例：0980347570)" required>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="submit" value="上傳">
+
+
+                </form>
+                <img src="static/readme.jpg">
+            </div>
+        </div>
+        <h5>請輸入你的手機號碼(範例：0980347570)</h5 -->
+                <img src="static/readme.jpg">
+                <!-- Optional JavaScript; choose one of the two! -->
+
+                <!-- Option 1: Bootstrap Bundle with Popper -->
+                <script
+                    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+                    crossorigin="anonymous"></script>
+
+                <!-- Option 2: Separate Popper and Bootstrap JS -->
+                <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+            </body>
+
+        </html>
