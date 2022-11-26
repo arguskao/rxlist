@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import Flask, flash, request,  redirect, url_for, render_template
-from deta import Deta  # Import Deta
-from create import *
+from deta import Deta  
+#from create import *
+from model_eleph import *
+
 
 today=f'{datetime.now().year}'+"."+f'{datetime.now().month}'+"."+f'{datetime.now().day}_'
 deta = Deta("c04wvyhi_ecBAX3odCitDT5jLAg88UXf7vNEpEfGu")
@@ -9,8 +11,6 @@ drive = deta.Drive("photo")
 
 Session = sessionmaker(bind=engine)
 s=Session()                       
-
-
 
 app = Flask(__name__)
 app.secret_key =  b'_5#y2L"F4Q8z\n\xec]/'            # 設置密鑰 
@@ -35,13 +35,14 @@ def upload_file():
         flash('請選擇要上傳的影像')                   # 發出快閃訊息 
         return redirect(url_for('index'))          # 令瀏覽器跳回首頁 
     if file and allowed_file(file.filename):       # 確認有檔案且副檔名在允許之列
-        tel=request.form.get('phone')
-        drive.put(today+f'{tel}.'+file.filename, file)
+        telphone=request.form.get('phone')
+        drive.put(today+f'{telphone}.'+file.filename, file)
         flash('影像上傳完畢！手機號碼就可以用來查詢。')
         book = Book(
-        序號=f"{tel}",
-        上傳日期=f'{datetime.now()}',
-        狀態='收到，準備包藥中',
+        tel=f"{telphone}",
+        date=f'{datetime.now()}',
+        mode='收到，準備包藥中',
+        point=0        
         )
         s.add(book)
         s.commit()
@@ -51,20 +52,21 @@ def upload_file():
         return redirect(url_for('index'))   # 令瀏覽器跳回首頁
     
 
-@app.route("/query")
+@app.route("/query",methods=['GET','POST'])
 def form():
     return render_template('query.html')
     
 @app.route("/submit", methods=['POST'])
 def submit():
-    ans = request.values['firstname']
-    book= s.query(Book).filter_by(序號=ans)
-    #book = s.query(Book).filter_by(序號=ans).count()
+    ans = request.values['tel']
+    book= s.query(Book).filter_by(tel=ans)
     if book.count()==0:
-        reply="手機號碼輸入錯誤！"         
+        reply="手機號碼輸入錯誤！"             
     else:
-        mode=f"{book.first().狀態}"     
+        Mode=f"{book.first().mode}"    
+        print("book")
     return render_template('submit.html',**locals())
+
 
 @app.route("/prize")
 def prize():
@@ -73,10 +75,5 @@ def prize():
 if __name__ == "__main__":
     app.run()
 
-#接下來設計資料庫，查詢
 
-
-
-        # 點數記錄='上傳處方簽贈1點',
-        # 總點數='不知道怎麼辦'  #要怎麼增加？每次增加一點
 

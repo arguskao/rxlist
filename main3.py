@@ -1,16 +1,13 @@
 from datetime import datetime
 from flask import Flask, flash, request,  redirect, url_for, render_template
 from deta import Deta  
-#from create import *
-from model import *
+from model_cock import *
 
 
 today=f'{datetime.now().year}'+"."+f'{datetime.now().month}'+"."+f'{datetime.now().day}_'
 deta = Deta("c04wvyhi_ecBAX3odCitDT5jLAg88UXf7vNEpEfGu")
 drive = deta.Drive("photo")
 
-Session = sessionmaker(bind=engine)
-s=Session()                       
 
 app = Flask(__name__)
 app.secret_key =  b'_5#y2L"F4Q8z\n\xec]/'            # 設置密鑰 
@@ -38,14 +35,9 @@ def upload_file():
         telphone=request.form.get('phone')
         drive.put(today+f'{telphone}.'+file.filename, file)
         flash('影像上傳完畢！手機號碼就可以用來查詢。')
-        book = Book(
-        tel=f"{telphone}",
-        date=f'{datetime.now()}',
-        mode='收到，準備包藥中',
-        point=0        
-        )
-        s.add(book)
-        s.commit()
+        add=f"INSERT INTO clinic7 VALUES (DEFAULT,'{telphone}','{datetime.now()}','收到，準備包藥中',DEFAULT,0)"
+        cur.execute(add)
+        conn.commit()
         return render_template('success.html')
     else:
         flash('僅允許上傳png, jpg, jpeg和gif影像檔')
@@ -59,11 +51,12 @@ def form():
 @app.route("/submit", methods=['POST'])
 def submit():
     ans = request.values['tel']
-    book= s.query(Book).filter_by(tel=ans)
+    sql='SELECT * from clinic7 where tel=f"{ans}"'
+    book= cur.execute(sql)
     if book.count()==0:
         reply="手機號碼輸入錯誤！"             
     else:
-        Mode=f"{book.first().mode}"    
+        Mode=f"{book.mode}"    
         print("book")
     return render_template('submit.html',**locals())
 

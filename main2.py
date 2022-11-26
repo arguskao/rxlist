@@ -1,9 +1,7 @@
 from datetime import datetime
 from flask import Flask, flash, request,  redirect, url_for, render_template
-from deta import Deta  
-#from create import *
-from model import *
-
+from deta import Deta  # Import Deta
+from model2 import *
 
 today=f'{datetime.now().year}'+"."+f'{datetime.now().month}'+"."+f'{datetime.now().day}_'
 deta = Deta("c04wvyhi_ecBAX3odCitDT5jLAg88UXf7vNEpEfGu")
@@ -35,17 +33,18 @@ def upload_file():
         flash('請選擇要上傳的影像')                   # 發出快閃訊息 
         return redirect(url_for('index'))          # 令瀏覽器跳回首頁 
     if file and allowed_file(file.filename):       # 確認有檔案且副檔名在允許之列
-        telphone=request.form.get('phone')
-        drive.put(today+f'{telphone}.'+file.filename, file)
+        tel=request.form.get('phone')
+        drive.put(today+f'{tel}.'+file.filename, file)
         flash('影像上傳完畢！手機號碼就可以用來查詢。')
         book = Book(
-        tel=f"{telphone}",
+        tel=f"{tel}",
         date=f'{datetime.now()}',
         mode='收到，準備包藥中',
-        point=0        
+        point=0
         )
         s.add(book)
         s.commit()
+        print("已經寫入")
         return render_template('success.html')
     else:
         flash('僅允許上傳png, jpg, jpeg和gif影像檔')
@@ -61,12 +60,10 @@ def submit():
     ans = request.values['tel']
     book= s.query(Book).filter_by(tel=ans)
     if book.count()==0:
-        reply="手機號碼輸入錯誤！"             
+        reply="手機號碼輸入錯誤！"         
     else:
-        Mode=f"{book.first().mode}"    
-        print("book")
+        Mode=f"{book.first().mode}"     
     return render_template('submit.html',**locals())
-
 
 @app.route("/prize")
 def prize():
